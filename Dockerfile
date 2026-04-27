@@ -1,17 +1,29 @@
-FROM node:16.17.0-alpine as builder
+# Builder Stage
+FROM node:18-alpine AS builder
 WORKDIR /app
-COPY ./package.json .
-COPY ./yarn.lock .
-RUN yarn install
+
+# Copy package files first (better caching)
+COPY package*.json ./
+
+# Install dependencies using npm ()
+RUN npm ci --only=production=false
+
+# Copy all source code
 COPY . .
+
+# Build argument + environment variables
 ARG TMDB_V3_API_KEY
 ENV VITE_APP_TMDB_V3_API_KEY=${TMDB_V3_API_KEY}
 ENV VITE_APP_API_ENDPOINT_URL="https://api.themoviedb.org/3"
-RUN yarn build
 
+# Build the app
+RUN npm run build
+
+# Production Stage
 FROM nginx:stable-alpine
-WORKDIR /usr/share/nginx/html
-RUN rm -rf ./*
-COPY --from=builder /app/dist .
+
+COPY --from=builder /app/dist /usr/share/nginx/html
+
 EXPOSE 80
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+
+CMD ["nginx", "-g", "daemon off;"]
