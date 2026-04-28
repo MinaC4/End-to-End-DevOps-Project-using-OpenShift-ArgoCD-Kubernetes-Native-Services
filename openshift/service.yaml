@@ -10,7 +10,7 @@ spec:
     app: netflix-clone
   ports:
     - name: http
-      port: 80           # الـ Route بيستخدمه
-      targetPort: 8080   # nginx بيستمع عليه
+      port: 80           #   
+      targetPort: 8080   #   
       protocol: TCP
   type: ClusterIP
