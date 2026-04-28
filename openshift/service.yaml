@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: netflix-clone
+  namespace: netflix-clone
+  labels:
+    app: netflix-clone
+spec:
+  selector:
+    app: netflix-clone
+  ports:
+    - name: http
+      port: 80           # الـ Route بيستخدمه
+      targetPort: 8080   # nginx بيستمع عليه
+      protocol: TCP
+  type: ClusterIP

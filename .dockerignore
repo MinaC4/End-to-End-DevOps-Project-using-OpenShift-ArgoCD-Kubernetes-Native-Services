@@ -1,3 +1,9 @@
-.*
-build
 node_modules
+build
+dist
+*.log
+.git
+.gitignore
+.env
+.env.*
+.DS_Store

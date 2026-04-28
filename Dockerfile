@@ -3,7 +3,7 @@ FROM node:18-alpine AS builder
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci
+RUN npm ci --include=dev
 
 COPY . .
 
@@ -14,9 +14,15 @@ ENV VITE_APP_API_ENDPOINT_URL="https://api.themoviedb.org/3"
 RUN npm run build
 
 # ====================== Production Stage ======================
-FROM nginx:stable-alpine
+FROM nginxinc/nginx-unprivileged:stable-alpine
 
+# Copy the built React application
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-EXPOSE 80
+# Copy custom nginx configuration for React Router
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 8080
+
+USER 101
 CMD ["nginx", "-g", "daemon off;"]
