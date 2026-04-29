@@ -1,5 +1,6 @@
 # ====================== Builder Stage ======================
-FROM node:18-alpine AS builder
+FROM docker.io/node:18-alpine AS builder
+
 WORKDIR /app
 
 COPY package*.json ./
@@ -14,7 +15,7 @@ ENV VITE_APP_API_ENDPOINT_URL="https://api.themoviedb.org/3"
 RUN npm run build
 
 # ====================== Production Stage ======================
-FROM nginxinc/nginx-unprivileged:stable-alpine
+FROM docker.io/nginxinc/nginx-unprivileged:stable-alpine
 
 # Copy the built React application
 COPY --from=builder /app/dist /usr/share/nginx/html
@@ -23,6 +24,6 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 8080
-
 USER 101
+
 CMD ["nginx", "-g", "daemon off;"]
