@@ -1,95 +1,268 @@
 <div align="center">
-  <a href="http://netflix-clone-with-tmdb-using-react-mui.vercel.app/">
-    <img src="./public/assets/netflix-logo.png" alt="Logo" width="100" height="32">
-  </a>
+  <img src="./public/assets/netflix-logo.png" alt="Netflix Clone" width="120" />
 
-  <h3 align="center">Netflix Clone</h3>
+  <h2>Netflix Clone - DevSecOps on OpenShift via GitOps</h2>
 
-  <p align="center">
-    <a href="https://netflix-clone-react-typescript.vercel.app/">View Demo</a>
-    ·
-    <a href="https://github.com/crazy-man22/netflix-clone-react-typescript/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/crazy-man22/netflix-clone-react-typescript/issues">Request Feature</a>
+  <p>
+    A modern Netflix Clone built with <b>React + TypeScript + Vite</b> and deployed on <b>OpenShift</b> using
+    <b>ArgoCD GitOps (CD)</b> and <b>OpenShift Pipelines (Tekton CI)</b>.
   </p>
 </div>
 
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#prerequests">Prerequests</a>
-    </li>
-    <li>
-      <a href="#which-features-this-project-deals-with">Which features this project deals with</a>
-    </li>
-    <li><a href="#third-party-libraries-used-except-for-react-and-rtk">Third Party libraries used except for React and RTK</a></li>
-    <li>
-      <a href="#contact">Contact</a>
-    </li>
-  </ol>
-</details>
+---
 
-<br />
+#  Project Overview
 
-<div align="center">
-  <img src="./public/assets/home-page.png" alt="Logo" width="100%" height="100%">
-  <p align="center">Home Page</p>
-  <img src="./public/assets/mini-portal.png" alt="Logo" width="100%" height="100%">
-  <p align="center">Mini Portal</p>
-  <img src="./public/assets/detail-modal.png" alt="Logo" width="100%" height="100%">
-  <p align="center">Detail Modal</p>
-  <img src="./public/assets/grid-genre.png" alt="Logo" width="100%" height="100%">
-  <p align="center">Grid Genre Page</p>
-  <img src="./public/assets/watch.png" alt="Logo" width="100%" height="100%">
-  <p align="center">Watch Page with customer contol bar</p>
-</div>
+This project demonstrates a **real-world DevSecOps pipeline** using:
 
-## Prerequests
+- GitOps for Continuous Delivery (ArgoCD)
+- CI Pipelines for Build & Security (Tekton)
+- OpenShift as Kubernetes runtime platform
+- Full observability & cluster-level governance
 
-- Create an account if you don't have on [TMDB](https://www.themoviedb.org/).
-  Because I use its free API to consume movie/tv data.
-- And then follow the [documentation](https://developers.themoviedb.org/3/getting-started/introduction) to create API Key
-- Finally, if you use v3 of TMDB API, create a file named `.env`, and copy and paste the content of `.env.example`.
-  And then paste the API Key you just created.
+---
 
-## Which features this project deal with
+#  System Architecture
 
-- How to create and use [Custom Hooks](https://reactjs.org/docs/hooks-custom.html)
-- How to use [Context](https://reactjs.org/docs/context.html) and its provider
-- How to use lazy and Suspense for [Code-Splitting](https://reactjs.org/docs/code-splitting.html)
-- How to use a new [lazy](https://reactrouter.com/en/main/route/lazy) feature of react-router to reduce bundle size.
-- How to use data [loader](https://reactrouter.com/en/main/route/loader) of react-router, and how to use redux dispatch in the loader to fetch data before rendering component.
-- How to use [Portal](https://reactjs.org/docs/portals.html)
-- How to use [Fowarding Refs](https://reactjs.org/docs/forwarding-refs.html) to make components reusuable
-- How to create and use [HOC](https://reactjs.org/docs/higher-order-components.html)
-- How to customize default theme of [MUI](https://mui.com/)
-- How to use [RTK](https://redux-toolkit.js.org/introduction/getting-started)
-- How to use [RTK Query](https://redux-toolkit.js.org/rtk-query/overview)
-- How to customize default classname of [MUI](https://mui.com/material-ui/experimental-api/classname-generator)
-- Infinite Scrolling(using [Intersection Observer API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API))
-- How to make awesome carousel using [slick-carousel](https://react-slick.neostack.com)
+##  High-Level Flow
 
-## Third Party libraries used except for React and RTK
 
-- [react-router-dom@v6.9](https://reactrouter.com/en/main)
-- [MUI(Material UI)](https://mui.com/)
-- [framer-motion](https://www.framer.com/docs/)
-- [video.js](https://videojs.com)
-- [react-slick](https://react-slick.neostack.com/)
+---
 
-## Install with Docker
+##  Components Breakdown
 
-```sh
-docker build --build-arg TMDB_V3_API_KEY=your_api_key_here -t netflix-clone .
+### 1. GitHub (Source of Truth)
+- Contains:
+  - React application source code (`src/`)
+  - Kubernetes manifests (`openshift/`)
+  - ArgoCD Application definition (`argocd/`)
 
-docker run --name netflix-clone-website --rm -d -p 80:80 netflix-clone
-```
+---
 
-## Todo
+### 2. CI Layer (OpenShift Pipelines - Tekton)
 
-- Make the animation of video card portal more similar to Netflix.
-- Improve performance. I am using `context` and `provider` but all components subscribed to the context's value are re-rendered. These re-renders happen even if the part of the value is not used in render of the component. there are [several ways](https://blog.axlight.com/posts/4-options-to-prevent-extra-rerenders-with-react-context/) to prevent the re-renders from these behaviours. In addition to them, there may be several performance issues.
-- Replace bundler([Vite](https://vitejs.dev/guide)) with [Turbopack](https://turbo.build/pack/docs/why-turbopack). Turbopack is introduced in Next.js conf recently. It's very fast but it's nor ready to use right now. it just support Next.js, and they plan to support all others as soon as possible. so if it's ready to use, replace [Vite](https://vitejs.dev/guide) with [Turbopack](https://turbo.build/pack/docs/why-turbopack).
-- Add accessibilities for better UX.
-- Add Tests.
+Responsible for:
+
+- Cloning source code
+- Building Docker image
+- Running security scans (Trivy)
+- Pushing image to container registry
+
+ CI pipeline runs at **cluster level**, not inside this repo.
+
+---
+
+### 3. CD Layer (ArgoCD GitOps)
+
+- Continuously monitors GitHub repository
+- Applies desired state to OpenShift cluster
+- Ensures:
+  - Self-healing
+  - Drift correction
+  - Declarative deployment
+
+---
+
+### 4. OpenShift Cluster (Runtime)
+
+Handles application execution:
+
+- Deployments
+- Services
+- Routes
+- Auto Scaling (HPA)
+- Resource control (Quota / LimitRange)
+- Reliability (PDB)
+
+---
+
+#  CI/CD Flow (Detailed)
+
+1. Developer pushes code to GitHub
+2. Tekton pipeline is triggered in OpenShift
+3. Application image is built
+4. Security scan is executed (Trivy)
+5. Image is pushed to container registry
+6. ArgoCD detects updated manifests
+7. ArgoCD syncs changes to OpenShift
+8. OpenShift updates running application
+
+---
+
+#  DevSecOps Features
+
+- GitOps-based deployment (ArgoCD)
+- CI pipeline automation (Tekton)
+- Container security scanning (Trivy)
+- Kubernetes-native deployment
+- Auto-scaling (HPA)
+- Resource limits (Quota / LimitRange)
+- Pod resilience (PDB)
+- Declarative infrastructure
+
+---
+
+#  What is in this repository
+
+This repository contains only application-owned assets:
+
+- React + TypeScript frontend
+- Kubernetes manifests (OpenShift deployment)
+- ArgoCD application definition
+
+---
+
+#  What is NOT in this repository
+
+These components are managed externally at cluster level:
+
+- ArgoCD Operator installation
+- Tekton Pipeline definitions (cluster-managed)
+- OpenShift cluster infrastructure
+- Container registry
+- Prometheus / Grafana monitoring stack
+- Networking / routing infrastructure
+
+---
+
+#  Repository Structure
+
+```text
+.
+├─ argocd/
+│  └─ application.yaml        # ArgoCD GitOps application definition
+│
+├─ openshift/                 # Kubernetes desired state (GitOps)
+│  ├─ deployment.yaml
+│  ├─ service.yaml
+│  ├─ route.yaml
+│  ├─ hpa.yaml
+│  ├─ pdb.yaml
+│  ├─ resource-quota.yaml
+│  ├─ limit-range.yaml
+│  ├─ security.yaml
+│  └─ kustomization.yaml
+│
+└─ src/                       # React application source code
+
+
+
+ Deployment (GitOps - ArgoCD)
+Prerequisites
+OpenShift cluster (CRC or production cluster)
+OpenShift GitOps Operator installed
+Access to ArgoCD UI
+Steps
+1. Apply ArgoCD Application
+oc apply -f argocd/application.yaml
+2. Configure Repository
+
+Update:
+
+spec:
+  source:
+    repoURL: YOUR_REPOSITORY_URL
+    targetRevision: main
+3. Verify Deployment
+Open ArgoCD UI
+Check:
+Sync Status → ✔ Synced
+Health Status → ✔ Healthy
+ Screenshots
+ Application UI
+Home Page
+Mini Portal
+Detail View
+Genre Grid
+Watch Page
+☁ OpenShift & GitOps
+ArgoCD Application Tree
+Pod Metrics
+OpenShift Project Overview
+Tekton Pipeline Execution
+⚙ Local Development
+npm ci
+npm run dev
+ Docker Build
+docker build --build-arg TMDB_V3_API_KEY=YOUR_KEY -t netflix-clone .
+docker run -p 8080:8080 netflix-clone
+ Key Engineering Concepts Demonstrated
+GitOps architecture design
+CI/CD separation (Tekton vs ArgoCD)
+Kubernetes-native application deployment
+Cluster-level vs repo-level responsibilities
+DevSecOps lifecycle implementation
+ Summary
+
+This project demonstrates a production-style DevSecOps system where:
+
+GitHub = Source of truth
+Tekton = CI engine
+ArgoCD = CD engine
+OpenShift = Runtime platform
+
+
+---
+
+#  Architecture Diagram Prompt (جاهز لأي AI / diagrams.net / Mermaid / Lucidchart)
+
+```text
+Create a DevSecOps + GitOps architecture diagram for a Netflix Clone application deployed on OpenShift.
+
+The system should follow a real-world enterprise CI/CD + GitOps model.
+
+Include the following components:
+
+1. Developer
+- Pushes code changes to GitHub
+
+2. GitHub Repository (Source of Truth)
+- Contains:
+  - React application source code
+  - Kubernetes manifests (Deployment, Service, Route, HPA, PDB)
+  - ArgoCD Application definition
+
+3. CI Layer (OpenShift Pipelines - Tekton)
+- Triggered on code push
+- Responsibilities:
+  - Clone repository
+  - Build Docker image
+  - Run security scan (Trivy)
+  - Push image to container registry
+
+4. Container Registry
+- Stores built container images
+
+5. CD Layer (ArgoCD GitOps Controller)
+- Continuously monitors GitHub repository
+- Applies Kubernetes manifests to OpenShift
+- Ensures desired state reconciliation
+- Handles drift correction and self-healing
+
+6. OpenShift Cluster (Runtime Environment)
+- Runs application workloads
+- Includes:
+  - Deployments
+  - Services
+  - Routes
+  - Horizontal Pod Autoscaler (HPA)
+  - Pod Disruption Budget (PDB)
+  - ResourceQuota / LimitRange
+
+7. Observability Layer (Optional but recommended)
+- Prometheus for metrics
+- Grafana for dashboards
+- OpenShift monitoring stack
+
+Show clearly:
+
+- CI vs CD separation
+- GitOps loop between GitHub and ArgoCD
+- Deployment flow into OpenShift
+- Image flow via container registry
+
+Style:
+- Use C4 model architecture style
+- Clean enterprise DevSecOps diagram
+- Separate layers: Dev / CI / CD / Runtime / Observability
+- Use directional arrows for data flow
