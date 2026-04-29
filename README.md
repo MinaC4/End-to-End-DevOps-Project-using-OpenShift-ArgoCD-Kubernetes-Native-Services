@@ -1,138 +1,76 @@
-<div align="center">
-  <img src="./public/assets/netflix-logo.png" alt="Netflix Clone" width="120" />
-
-  <h2>Netflix Clone - DevSecOps on OpenShift via GitOps</h2>
-
-  <p>
-    A modern Netflix Clone built with <b>React + TypeScript + Vite</b> and deployed on <b>OpenShift</b> using
-    <b>ArgoCD GitOps (CD)</b> and <b>OpenShift Pipelines (Tekton CI)</b>.
-  </p>
-</div>
 
 ---
 
-#  Project Overview
+# Netflix Clone — DevSecOps + GitOps (Tekton, ArgoCD, OpenShift)
 
-This project demonstrates a **real-world DevSecOps pipeline** using:
+## Architecture diagram
 
-- GitOps for Continuous Delivery (ArgoCD)
-- CI Pipelines for Build & Security (Tekton)
-- OpenShift as Kubernetes runtime platform
-- Full observability & cluster-level governance
+![Netflix Clone Architecture](docs/architecture-diagram.png)
 
----
+A modern **Netflix Clone application** built with **React + TypeScript + Vite**, and deployed on **OpenShift** using a full **DevSecOps + GitOps pipeline** with **Tekton (CI)** and **ArgoCD (CD)**.
 
-#  System Architecture
-
-##  High-Level Flow
-
+This project simulates a **production-grade Kubernetes deployment strategy** with separation between CI and CD layers.
 
 ---
 
-##  Components Breakdown
+## What’s in this repo
 
-### 1. GitHub (Source of Truth)
-- Contains:
-  - React application source code (`src/`)
-  - Kubernetes manifests (`openshift/`)
-  - ArgoCD Application definition (`argocd/`)
+### Application layer
 
----
-
-### 2. CI Layer (OpenShift Pipelines - Tekton)
-
-Responsible for:
-
-- Cloning source code
-- Building Docker image
-- Running security scans (Trivy)
-- Pushing image to container registry
-
- CI pipeline runs at **cluster level**, not inside this repo.
+* **Frontend**: React + TypeScript + Vite (`src/`)
+* Netflix UI clone (home, details, watch page, genres grid)
+* TMDB API integration (movies & TV shows)
 
 ---
 
-### 3. CD Layer (ArgoCD GitOps)
+### GitOps layer (ArgoCD managed)
 
-- Continuously monitors GitHub repository
-- Applies desired state to OpenShift cluster
-- Ensures:
-  - Self-healing
-  - Drift correction
-  - Declarative deployment
+* Kubernetes manifests (`openshift/`)
 
----
-
-### 4. OpenShift Cluster (Runtime)
-
-Handles application execution:
-
-- Deployments
-- Services
-- Routes
-- Auto Scaling (HPA)
-- Resource control (Quota / LimitRange)
-- Reliability (PDB)
+  * Deployment
+  * Service
+  * Route
+  * HPA (autoscaling)
+  * PDB (resilience)
+  * ResourceQuota
+  * LimitRange
+  * Security policies
+* ArgoCD Application definition (`argocd/`)
 
 ---
 
-#  CI/CD Flow (Detailed)
+### CI layer (OpenShift Pipelines - Tekton)
 
-1. Developer pushes code to GitHub
-2. Tekton pipeline is triggered in OpenShift
-3. Application image is built
-4. Security scan is executed (Trivy)
-5. Image is pushed to container registry
-6. ArgoCD detects updated manifests
-7. ArgoCD syncs changes to OpenShift
-8. OpenShift updates running application
+* Triggered on GitHub push
+* Builds container image
+* Runs security scans (Trivy)
+* Pushes image to container registry
+
+> CI is cluster-managed and NOT stored in this repo (only referenced)
 
 ---
 
-#  DevSecOps Features
+### Runtime layer (OpenShift Cluster)
 
-- GitOps-based deployment (ArgoCD)
-- CI pipeline automation (Tekton)
-- Container security scanning (Trivy)
-- Kubernetes-native deployment
-- Auto-scaling (HPA)
-- Resource limits (Quota / LimitRange)
-- Pod resilience (PDB)
-- Declarative infrastructure
+* Runs the application workload
+* Handles:
 
----
-
-#  What is in this repository
-
-This repository contains only application-owned assets:
-
-- React + TypeScript frontend
-- Kubernetes manifests (OpenShift deployment)
-- ArgoCD application definition
+  * Pods & Deployments
+  * Services & Routes
+  * Auto scaling (HPA)
+  * Resource governance (Quota / LimitRange)
+  * Pod resilience (PDB)
 
 ---
 
-#  What is NOT in this repository
-
-These components are managed externally at cluster level:
-
-- ArgoCD Operator installation
-- Tekton Pipeline definitions (cluster-managed)
-- OpenShift cluster infrastructure
-- Container registry
-- Prometheus / Grafana monitoring stack
-- Networking / routing infrastructure
-
----
-
-#  Repository Structure
+## Repository structure
 
 ```text
 .
 ├─ argocd/
-│  └─ application.yaml        # ArgoCD GitOps application definition
+│  └─ application.yaml        # ArgoCD GitOps application
 │
-├─ openshift/                 # Kubernetes desired state (GitOps)
+├─ openshift/                 # Kubernetes desired state
 │  ├─ deployment.yaml
 │  ├─ service.yaml
 │  ├─ route.yaml
@@ -143,126 +81,197 @@ These components are managed externally at cluster level:
 │  ├─ security.yaml
 │  └─ kustomization.yaml
 │
-└─ src/                       # React application source code
+├─ src/                       # React + TypeScript app
+├─ public/                    # Static assets (images, logos)
+└─ package.json
+```
 
+---
 
+## CI/CD pipeline (DevSecOps flow)
 
- Deployment (GitOps - ArgoCD)
-Prerequisites
-OpenShift cluster (CRC or production cluster)
-OpenShift GitOps Operator installed
-Access to ArgoCD UI
-Steps
-1. Apply ArgoCD Application
+### 1. Developer workflow
+
+* Developer pushes code to GitHub
+
+---
+
+### 2. CI Layer (Tekton Pipeline)
+
+Pipeline steps:
+
+* Clone repository
+* Build Docker image (React app)
+* Run security scan (Trivy)
+* Push image to container registry
+
+---
+
+### 3. CD Layer (ArgoCD GitOps)
+
+* Watches GitHub repository continuously
+* Detects changes in manifests
+* Syncs desired state to OpenShift
+* Ensures:
+
+  * Self-healing
+  * Drift correction
+  * Declarative deployment
+
+---
+
+### 4. OpenShift Runtime
+
+* Pulls updated container image
+* Applies Kubernetes manifests
+* Manages scaling and availability
+
+---
+
+## CI/CD Flow (End-to-End)
+
+1. Developer pushes code → GitHub
+2. Tekton pipeline is triggered
+3. Docker image is built
+4. Security scan runs (Trivy)
+5. Image is pushed to registry
+6. ArgoCD detects manifest changes
+7. ArgoCD syncs to OpenShift
+8. OpenShift updates running pods
+
+---
+
+## DevSecOps features
+
+* GitOps deployment (ArgoCD)
+* CI automation (Tekton)
+* Container security scanning (Trivy)
+* Kubernetes-native infrastructure
+* Auto scaling (HPA)
+* Resource control (Quota / LimitRange)
+* Pod resilience (PDB)
+* Declarative infrastructure (YAML-based)
+
+---
+
+## Observability (optional layer)
+
+* Prometheus → metrics collection
+* Grafana → dashboards & visualization
+* OpenShift Monitoring Stack → cluster insights
+
+---
+
+## Local development
+
+```bash
+npm install
+npm run dev
+```
+
+App runs on:
+
+```
+http://localhost:5173
+```
+
+---
+
+## Docker build & run
+
+```bash
+docker build --build-arg TMDB_V3_API_KEY=YOUR_KEY -t netflix-clone .
+docker run -p 8080:8080 netflix-clone
+```
+
+---
+
+## Deployment (GitOps via ArgoCD)
+
+### 1. Apply ArgoCD application
+
+```bash
 oc apply -f argocd/application.yaml
-2. Configure Repository
+```
+
+---
+
+### 2. Configure repository
 
 Update:
 
+```yaml
 spec:
   source:
     repoURL: YOUR_REPOSITORY_URL
     targetRevision: main
-3. Verify Deployment
-Open ArgoCD UI
-Check:
-Sync Status → ✔ Synced
-Health Status → ✔ Healthy
- Screenshots
- Application UI
-Home Page
-Mini Portal
-Detail View
-Genre Grid
-Watch Page
-☁ OpenShift & GitOps
-ArgoCD Application Tree
-Pod Metrics
-OpenShift Project Overview
-Tekton Pipeline Execution
-⚙ Local Development
-npm ci
-npm run dev
- Docker Build
-docker build --build-arg TMDB_V3_API_KEY=YOUR_KEY -t netflix-clone .
-docker run -p 8080:8080 netflix-clone
- Key Engineering Concepts Demonstrated
-GitOps architecture design
-CI/CD separation (Tekton vs ArgoCD)
-Kubernetes-native application deployment
-Cluster-level vs repo-level responsibilities
-DevSecOps lifecycle implementation
- Summary
-
-This project demonstrates a production-style DevSecOps system where:
-
-GitHub = Source of truth
-Tekton = CI engine
-ArgoCD = CD engine
-OpenShift = Runtime platform
-
+```
 
 ---
 
-#  Architecture Diagram Prompt (جاهز لأي AI / diagrams.net / Mermaid / Lucidchart)
+### 3. Verify deployment
+
+Open ArgoCD UI:
+
+* Sync Status → Synced ✔
+* Health Status → Healthy ✔
+
+---
+
+## What is NOT in this repo
+
+These components are cluster-managed:
+
+* Tekton pipeline definitions
+* OpenShift cluster setup
+* ArgoCD operator installation
+* Container registry configuration
+* Monitoring stack (Prometheus / Grafana)
+
+---
+
+## Key engineering concepts demonstrated
+
+* GitOps architecture design
+* CI/CD separation (Tekton vs ArgoCD)
+* Kubernetes-native deployment
+* Declarative infrastructure (YAML-driven)
+* DevSecOps lifecycle implementation
+* Enterprise-grade OpenShift patterns
+
+---
+
+## Summary
+
+This project demonstrates a real-world production-style DevSecOps system:
+
+* **GitHub → Source of truth**
+* **Tekton → CI engine**
+* **ArgoCD → CD engine**
+* **OpenShift → Runtime platform**
+
+---
+
+## Architecture Diagram Prompt
 
 ```text
 Create a DevSecOps + GitOps architecture diagram for a Netflix Clone application deployed on OpenShift.
 
-The system should follow a real-world enterprise CI/CD + GitOps model.
+Include:
 
-Include the following components:
-
-1. Developer
-- Pushes code changes to GitHub
-
-2. GitHub Repository (Source of Truth)
-- Contains:
-  - React application source code
-  - Kubernetes manifests (Deployment, Service, Route, HPA, PDB)
-  - ArgoCD Application definition
-
-3. CI Layer (OpenShift Pipelines - Tekton)
-- Triggered on code push
-- Responsibilities:
-  - Clone repository
-  - Build Docker image
-  - Run security scan (Trivy)
-  - Push image to container registry
-
+1. Developer → GitHub (source code)
+2. GitHub repository (React app + Kubernetes manifests + ArgoCD app)
+3. Tekton CI pipeline (build, test, Trivy scan, push image)
 4. Container Registry
-- Stores built container images
+5. ArgoCD (GitOps controller)
+6. OpenShift cluster (deployments, services, routes, HPA, PDB)
+7. Observability stack (Prometheus + Grafana)
 
-5. CD Layer (ArgoCD GitOps Controller)
-- Continuously monitors GitHub repository
-- Applies Kubernetes manifests to OpenShift
-- Ensures desired state reconciliation
-- Handles drift correction and self-healing
-
-6. OpenShift Cluster (Runtime Environment)
-- Runs application workloads
-- Includes:
-  - Deployments
-  - Services
-  - Routes
-  - Horizontal Pod Autoscaler (HPA)
-  - Pod Disruption Budget (PDB)
-  - ResourceQuota / LimitRange
-
-7. Observability Layer (Optional but recommended)
-- Prometheus for metrics
-- Grafana for dashboards
-- OpenShift monitoring stack
-
-Show clearly:
-
+Show:
 - CI vs CD separation
-- GitOps loop between GitHub and ArgoCD
-- Deployment flow into OpenShift
-- Image flow via container registry
+- GitOps loop (GitHub ↔ ArgoCD ↔ OpenShift)
+- Image flow via registry
+- Enterprise DevSecOps structure
 
-Style:
-- Use C4 model architecture style
-- Clean enterprise DevSecOps diagram
-- Separate layers: Dev / CI / CD / Runtime / Observability
-- Use directional arrows for data flow
+Style: clean C4 model architecture, layered (Dev / CI / CD / Runtime / Observability)
+```
