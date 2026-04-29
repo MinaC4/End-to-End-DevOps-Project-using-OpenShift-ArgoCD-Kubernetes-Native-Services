@@ -18,7 +18,8 @@ A modern **Netflix Clone application** built with **React + TypeScript + Vite**,
 
 ## What’s in this repo
 
-### Application layer
+### Application layer  <img width="1920" height="1200" alt="Screenshot 2026-04-30 at 1 00 07 AM" src="https://github.com/user-attachments/assets/bade5ecc-8a30-4762-b64d-12dbe44a3fef" />
+
 
 * **Frontend**: React + TypeScript + Vite (`src/`)
 * Netflix UI clone (home, details, watch page, genres grid)
@@ -26,9 +27,11 @@ A modern **Netflix Clone application** built with **React + TypeScript + Vite**,
 
 ---
 
-### GitOps layer (ArgoCD managed)
+### GitOps layer (ArgoCD managed) <img width="1920" height="1200" alt="Screenshot 2026-04-30 at 12 52 32 AM" src="https://github.com/user-attachments/assets/1a46f6f6-1633-4f6c-8b16-a3933588d3b3" />
 
-* Kubernetes manifests (`openshift/`)
+
+* Kubernetes manifests (`openshift/`) <img width="1920" height="1200" alt="Screenshot 2026-04-30 at 12 53 16 AM" src="https://github.com/user-attachments/assets/dba1af77-9f61-4228-85b0-db424bd0f9a5" />
+
 
   * Deployment
   * Service
@@ -38,9 +41,11 @@ A modern **Netflix Clone application** built with **React + TypeScript + Vite**,
   * ResourceQuota
   * LimitRange
   * Security policies
-* ArgoCD Application definition (`argocd/`)
+* ArgoCD Application definition (`argocd/`) <img width="1920" height="1200" alt="Screenshot 2026-04-30 at 12 55 19 AM" src="https://github.com/user-attachments/assets/03e19a53-1486-489a-a3f5-75f1bf313fcc" />
 
----
+
+--- <img width="1920" height="1200" alt="Screenshot 2026-04-30 at 12 53 29 AM" src="https://github.com/user-attachments/assets/726b80ae-adbb-4177-97cb-9967f177df40" />
+
 
 ### CI layer (OpenShift Pipelines - Tekton)
 
@@ -99,7 +104,8 @@ A modern **Netflix Clone application** built with **React + TypeScript + Vite**,
 
 ---
 
-### 2. CI Layer (Tekton Pipeline)
+### 2. CI Layer (Tekton Pipeline) <img width="1920" height="1200" alt="Screenshot 2026-04-30 at 12 57 40 AM" src="https://github.com/user-attachments/assets/934e8cdb-fdc5-4c00-bd89-dc07b5c7929d" />
+
 
 Pipeline steps:
 
@@ -131,7 +137,8 @@ Pipeline steps:
 
 ---
 
-## CI/CD Flow (End-to-End)
+## CI/CD Flow (End-to-End) <img width="1920" height="1200" alt="Screenshot 2026-04-30 at 12 58 34 AM" src="https://github.com/user-attachments/assets/749870a3-90a3-41d0-b2b1-b1bb13d70aab" />
+
 
 1. Developer pushes code → GitHub
 2. Tekton pipeline is triggered
