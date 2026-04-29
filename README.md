@@ -1,7 +1,7 @@
 
 ---
 
-# Netflix Clone — DevSecOps + GitOps (Tekton, ArgoCD, OpenShift)
+# Netflix Clone — DevOps + GitOps (Tekton, ArgoCD, OpenShift)
 
 ## Architecture diagram
 
@@ -145,7 +145,7 @@ Pipeline steps:
 
 ---
 
-## DevSecOps features
+## DevOps features
 
 * GitOps deployment (ArgoCD)
 * CI automation (Tekton)
@@ -256,26 +256,3 @@ This project demonstrates a real-world production-style DevSecOps system:
 
 ---
 
-## Architecture Diagram Prompt
-
-```text
-Create a DevSecOps + GitOps architecture diagram for a Netflix Clone application deployed on OpenShift.
-
-Include:
-
-1. Developer → GitHub (source code)
-2. GitHub repository (React app + Kubernetes manifests + ArgoCD app)
-3. Tekton CI pipeline (build, test, Trivy scan, push image)
-4. Container Registry
-5. ArgoCD (GitOps controller)
-6. OpenShift cluster (deployments, services, routes, HPA, PDB)
-7. Observability stack (Prometheus + Grafana)
-
-Show:
-- CI vs CD separation
-- GitOps loop (GitHub ↔ ArgoCD ↔ OpenShift)
-- Image flow via registry
-- Enterprise DevSecOps structure
-
-Style: clean C4 model architecture, layered (Dev / CI / CD / Runtime / Observability)
-```
