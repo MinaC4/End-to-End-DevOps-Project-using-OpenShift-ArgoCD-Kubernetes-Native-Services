@@ -1,95 +1,180 @@
 <div align="center">
-  <a href="http://netflix-clone-with-tmdb-using-react-mui.vercel.app/">
-    <img src="./public/assets/netflix-logo.png" alt="Logo" width="100" height="32">
-  </a>
+  <img src="./public/assets/netflix-logo.png" alt="Netflix Clone" width="120" />
 
-  <h3 align="center">Netflix Clone</h3>
+  <h3 align="center">Netflix Clone (DevSecOps on OpenShift via GitOps)</h3>
 
   <p align="center">
-    <a href="https://netflix-clone-react-typescript.vercel.app/">View Demo</a>
-    ·
-    <a href="https://github.com/crazy-man22/netflix-clone-react-typescript/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/crazy-man22/netflix-clone-react-typescript/issues">Request Feature</a>
+    React + TypeScript + Vite app deployed on <b>OpenShift</b> using <b>ArgoCD GitOps</b>.
   </p>
 </div>
 
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#prerequests">Prerequests</a>
-    </li>
-    <li>
-      <a href="#which-features-this-project-deals-with">Which features this project deals with</a>
-    </li>
-    <li><a href="#third-party-libraries-used-except-for-react-and-rtk">Third Party libraries used except for React and RTK</a></li>
-    <li>
-      <a href="#contact">Contact</a>
-    </li>
-  </ol>
-</details>
+## Table of contents
 
-<br />
+- [Architecture](#architecture)
+- [CI/CD flow (GitOps CD)](#cicd-flow-gitops-cd)
+- [DevSecOps features](#devsecops-features)
+- [What is NOT in this repo](#what-is-not-in-this-repo)
+- [Repository structure](#repository-structure)
+- [Deploy on OpenShift (GitOps)](#deploy-on-openshift-gitops)
+- [Application screenshots](#application-screenshots)
+- [OpenShift / GitOps screenshots](#openshift--gitops-screenshots)
+- [Local development (optional)](#local-development-optional)
+- [Build & run with Docker (optional)](#build--run-with-docker-optional)
 
-<div align="center">
-  <img src="./public/assets/home-page.png" alt="Logo" width="100%" height="100%">
-  <p align="center">Home Page</p>
-  <img src="./public/assets/mini-portal.png" alt="Logo" width="100%" height="100%">
-  <p align="center">Mini Portal</p>
-  <img src="./public/assets/detail-modal.png" alt="Logo" width="100%" height="100%">
-  <p align="center">Detail Modal</p>
-  <img src="./public/assets/grid-genre.png" alt="Logo" width="100%" height="100%">
-  <p align="center">Grid Genre Page</p>
-  <img src="./public/assets/watch.png" alt="Logo" width="100%" height="100%">
-  <p align="center">Watch Page with customer contol bar</p>
-</div>
+## Architecture
 
-## Prerequests
+**GitHub → ArgoCD → OpenShift Cluster → Deployment**
 
-- Create an account if you don't have on [TMDB](https://www.themoviedb.org/).
-  Because I use its free API to consume movie/tv data.
-- And then follow the [documentation](https://developers.themoviedb.org/3/getting-started/introduction) to create API Key
-- Finally, if you use v3 of TMDB API, create a file named `.env`, and copy and paste the content of `.env.example`.
-  And then paste the API Key you just created.
+- **GitHub**: source of truth (app code + OpenShift manifests under `openshift/`)
+- **ArgoCD**: watches the Git repo and continuously syncs desired state to the cluster (GitOps CD)
+- **OpenShift**: runs the workload and exposes it (Deployment/Service/Route), and enforces platform controls (HPA/PDB/Quota/LimitRange)
 
-## Which features this project deal with
+The ArgoCD `Application` definition lives in `argocd/application.yaml` and points ArgoCD to the `openshift/` folder as the desired state.
 
-- How to create and use [Custom Hooks](https://reactjs.org/docs/hooks-custom.html)
-- How to use [Context](https://reactjs.org/docs/context.html) and its provider
-- How to use lazy and Suspense for [Code-Splitting](https://reactjs.org/docs/code-splitting.html)
-- How to use a new [lazy](https://reactrouter.com/en/main/route/lazy) feature of react-router to reduce bundle size.
-- How to use data [loader](https://reactrouter.com/en/main/route/loader) of react-router, and how to use redux dispatch in the loader to fetch data before rendering component.
-- How to use [Portal](https://reactjs.org/docs/portals.html)
-- How to use [Fowarding Refs](https://reactjs.org/docs/forwarding-refs.html) to make components reusuable
-- How to create and use [HOC](https://reactjs.org/docs/higher-order-components.html)
-- How to customize default theme of [MUI](https://mui.com/)
-- How to use [RTK](https://redux-toolkit.js.org/introduction/getting-started)
-- How to use [RTK Query](https://redux-toolkit.js.org/rtk-query/overview)
-- How to customize default classname of [MUI](https://mui.com/material-ui/experimental-api/classname-generator)
-- Infinite Scrolling(using [Intersection Observer API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API))
-- How to make awesome carousel using [slick-carousel](https://react-slick.neostack.com)
+## CI/CD flow (GitOps CD)
 
-## Third Party libraries used except for React and RTK
+1. **Developer pushes code to GitHub**
+2. **ArgoCD detects changes**
+3. **ArgoCD syncs manifests to OpenShift**
+4. **OpenShift deploys / updates the application**
 
-- [react-router-dom@v6.9](https://reactrouter.com/en/main)
-- [MUI(Material UI)](https://mui.com/)
-- [framer-motion](https://www.framer.com/docs/)
-- [video.js](https://videojs.com)
-- [react-slick](https://react-slick.neostack.com/)
+> Note: Build pipelines (e.g., OpenShift Pipelines / Tekton) can be used for CI (build, scan, push image). This repo focuses on the GitOps CD part; cluster-level pipeline setup is typically managed outside this repo.
 
-## Install with Docker
+## DevSecOps features
 
-```sh
-docker build --build-arg TMDB_V3_API_KEY=your_api_key_here -t netflix-clone .
+- **Kubernetes-native deployment**: `Deployment`, `Service`, `Route`
+- **GitOps (ArgoCD)**: automated sync, prune, self-heal
+- **Auto-scaling**: `HorizontalPodAutoscaler` (CPU-based)
+- **Resilience**: `PodDisruptionBudget`
+- **Resource governance**: `ResourceQuota` + `LimitRange`
+- **Security context control**: `ServiceAccount` + `RoleBinding` to OpenShift SCC (see `openshift/security.yaml`)
 
-docker run --name netflix-clone-website --rm -d -p 80:80 netflix-clone
+## What is NOT in this repo
+
+These are deployed/managed at **cluster level** and are intentionally **not** part of this repository:
+
+- **ArgoCD Operator** (installed in OpenShift, runs in `openshift-gitops`)
+- **Prometheus / Grafana** (OpenShift built-in monitoring)
+- **Cluster networking / ingress routing layer** (platform-managed)
+
+## Repository structure
+
+```text
+.
+├─ argocd/
+│  └─ application.yaml              # ArgoCD Application (points to openshift/)
+├─ openshift/                       # Desired state applied by ArgoCD (Kustomize)
+│  ├─ kustomization.yaml
+│  ├─ namespace.yaml
+│  ├─ security.yaml                 # SA + SCC RoleBinding
+│  ├─ deployment.yaml
+│  ├─ service.yaml
+│  ├─ route.yaml
+│  ├─ hpa.yaml
+│  ├─ pdb.yaml
+│  ├─ resource-quota.yaml
+│  └─ limit-range.yaml
+└─ src/                             # React application
 ```
 
-## Todo
+## Deploy on OpenShift (GitOps)
 
-- Make the animation of video card portal more similar to Netflix.
-- Improve performance. I am using `context` and `provider` but all components subscribed to the context's value are re-rendered. These re-renders happen even if the part of the value is not used in render of the component. there are [several ways](https://blog.axlight.com/posts/4-options-to-prevent-extra-rerenders-with-react-context/) to prevent the re-renders from these behaviours. In addition to them, there may be several performance issues.
-- Replace bundler([Vite](https://vitejs.dev/guide)) with [Turbopack](https://turbo.build/pack/docs/why-turbopack). Turbopack is introduced in Next.js conf recently. It's very fast but it's nor ready to use right now. it just support Next.js, and they plan to support all others as soon as possible. so if it's ready to use, replace [Vite](https://vitejs.dev/guide) with [Turbopack](https://turbo.build/pack/docs/why-turbopack).
-- Add accessibilities for better UX.
-- Add Tests.
+### Prerequisites
+
+- **OpenShift cluster** (CRC / dev cluster is fine)
+- **OpenShift GitOps (ArgoCD)** installed (usually via Operator)
+- **Access** to create an ArgoCD `Application` in `openshift-gitops`
+
+### Steps
+
+1. **Push this repository** to your GitHub (or any git server ArgoCD can reach).
+2. **Update the repo URL** in `argocd/application.yaml`:
+   - `spec.source.repoURL`: point to your fork/repo
+   - `spec.source.targetRevision`: branch (e.g. `main`)
+3. **Apply the ArgoCD Application** (example):
+
+```bash
+oc apply -f argocd/application.yaml
+```
+
+4. Open ArgoCD UI and confirm the app becomes **Synced** and **Healthy**.
+5. The app is exposed via **OpenShift Route** (`openshift/route.yaml`).
+
+## Application screenshots
+
+<div align="center">
+  <img src="./public/assets/home-page.png" alt="Home Page" width="100%" />
+  <p align="center">Home Page</p>
+  <img src="./public/assets/mini-portal.png" alt="Mini Portal" width="100%" />
+  <p align="center">Mini Portal</p>
+  <img src="./public/assets/detail-modal.png" alt="Detail Modal" width="100%" />
+  <p align="center">Detail Modal</p>
+  <img src="./public/assets/grid-genre.png" alt="Grid Genre Page" width="100%" />
+  <p align="center">Grid Genre Page</p>
+  <img src="./public/assets/watch.png" alt="Watch Page" width="100%" />
+  <p align="center">Watch Page</p>
+</div>
+
+## OpenShift / GitOps screenshots
+
+> These screenshots were captured from OpenShift + ArgoCD UI to document the real platform workflow.
+
+<div align="center">
+  <img src="./docs/screenshots/01-openshift-installed-operators.png" alt="Installed Operators" width="100%" />
+  <p align="center">Installed Operators (OpenShift GitOps + OpenShift Pipelines)</p>
+
+  <img src="./docs/screenshots/10-argocd-app-details.png" alt="ArgoCD Application details" width="100%" />
+  <p align="center">ArgoCD Application details</p>
+
+  <img src="./docs/screenshots/06-argocd-app-tree.png" alt="ArgoCD app tree" width="100%" />
+  <p align="center">ArgoCD application tree (resources in sync)</p>
+
+  <img src="./docs/screenshots/08-openshift-project-overview.png" alt="OpenShift project overview" width="100%" />
+  <p align="center">OpenShift project overview</p>
+
+  <img src="./docs/screenshots/02-openshift-pod-metrics.png" alt="Pod metrics" width="100%" />
+  <p align="center">Pod metrics (CPU/Memory/Network)</p>
+
+  <img src="./docs/screenshots/11-tekton-pipelinerun-details.png" alt="Tekton PipelineRun details" width="100%" />
+  <p align="center">Tekton PipelineRun (clone → build/push → scan → deploy)</p>
+
+  <img src="./docs/screenshots/04-tekton-clone-and-build.png" alt="Tekton clone and build logs" width="100%" />
+  <p align="center">Tekton task logs: clone-and-build</p>
+
+  <img src="./docs/screenshots/09-tekton-build-and-push-image.png" alt="Tekton build and push logs" width="100%" />
+  <p align="center">Tekton task logs: build-and-push-image</p>
+
+  <img src="./docs/screenshots/03-tekton-trivy-image-scan.png" alt="Tekton Trivy image scan logs" width="100%" />
+  <p align="center">Tekton task logs: trivy-image-scan</p>
+
+  <img src="./docs/screenshots/07-tekton-deploy-to-openshift.png" alt="Tekton deploy logs" width="100%" />
+  <p align="center">Tekton task logs: deploy-to-openshift</p>
+
+  <img src="./docs/screenshots/05-tekton-pipelines-overview.png" alt="Tekton pipelines overview" width="100%" />
+  <p align="center">Pipelines overview</p>
+
+  <img src="./docs/screenshots/12-app-ui.png" alt="Deployed app UI" width="100%" />
+  <p align="center">Deployed app (UI)</p>
+</div>
+
+## Local development (optional)
+
+### TMDB API key
+
+- Create an account on [TMDB](https://www.themoviedb.org/)
+- Create an API key following the [TMDB docs](https://developers.themoviedb.org/3/getting-started/introduction)
+- Create `.env` based on `.env.example` and set `TMDB_V3_API_KEY`
+
+### Run locally
+
+```bash
+npm ci
+npm run dev
+```
+
+## Build & run with Docker (optional)
+
+```bash
+docker build --build-arg TMDB_V3_API_KEY=your_api_key_here -t netflix-clone .
+docker run --name netflix-clone-website --rm -d -p 8080:8080 netflix-clone
+```
