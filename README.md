@@ -10,9 +10,11 @@
 
 ---
 
-# Architecture Diagram
+# Architecture diagram
 
-## C4 Model: System Context
+## Netflix Clone architecture diagram
+
+A modern Netflix Clone built with React + TypeScript + Vite and deployed to OpenShift using ArgoCD GitOps, with a DevSecOps CI/CD pipeline in Tekton and GitOps continuous delivery via ArgoCD.
 
 ```mermaid
 graph TB
@@ -64,203 +66,24 @@ graph TB
     style Grafana fill:#e0f2f1
 ```
 
-## Component Breakdown
+---
 
-### 1. Developer Workflow
-- **Local Development**: React + TypeScript + Vite
-- **Code Push**: Git commits to GitHub
-- **Branch Strategy**: Feature branches → Main branch
+# What's in this repo
 
-### 2. Source Control (GitHub)
-- **Application Code**: React frontend (`src/`)
-- **Infrastructure as Code**: Kubernetes manifests (`openshift/`)
-- **GitOps Configuration**: ArgoCD Application (`argocd/`)
-- **Version Control**: Complete traceability of changes
+## Application services
+- **Frontend**: React + TypeScript + Vite in `src/` (dev server on 5173)
+- **Kubernetes manifests**: OpenShift deployment configurations in `openshift/`
+- **ArgoCD configuration**: GitOps application definition in `argocd/`
 
-### 3. CI Pipeline (Tekton)
-```yaml
-Pipeline Tasks:
-  - clone-repository: Git checkout
-  - build-application: npm build
-  - build-image: Docker build
-  - security-scan: Trivy vulnerability scan
-  - push-image: Container registry push
-  - update-manifest: Image tag update
+## DevSecOps & GitOps
+- **GitOps**: ArgoCD application definition for continuous delivery
+- **Container security**: Trivy vulnerability scanning integration
+- **Kubernetes-native deployment**: Complete OpenShift manifests
+- **Resource governance**: ResourceQuota, LimitRange, HPA, PDB
+- **Security controls**: ServiceAccount, RoleBinding, security contexts
+
+## Repository structure
 ```
-
-### 4. Container Registry
-- **Image Storage**: Built container images
-- **Versioning**: Semantic tags and digests
-- **Security**: Image signing and scanning
-- **Distribution**: Pull access for clusters
-
-### 5. CD Pipeline (ArgoCD)
-```yaml
-GitOps Features:
-  - Continuous Sync: Git → Cluster
-  - Health Monitoring: Application status
-  - Drift Detection: Manual changes alert
-  - Self-Healing: Automatic reconciliation
-  - Rollback: Previous version restore
-```
-
-### 6. Runtime (OpenShift)
-```yaml
-Kubernetes Resources:
-  - Deployment: Pod management
-  - Service: Internal networking
-  - Route: External access
-  - HPA: Auto-scaling
-  - PDB: Availability guarantee
-  - ResourceQuota: Resource limits
-  - LimitRange: Default constraints
-```
-
-### 7. Observability Stack
-- **Metrics Collection**: Prometheus scraping
-- **Visualization**: Grafana dashboards
-- **Alerting**: Threshold-based notifications
-- **Logging**: Centralized log aggregation
-
-## Data Flow Analysis
-
-### CI Flow
-1. **Code Commit** → GitHub webhook triggers Tekton
-2. **Build Process** → Creates optimized container image
-3. **Security Scan** → Trivy analyzes for vulnerabilities
-4. **Image Push** → Stores in container registry
-5. **Manifest Update** → Updates image tag in Git
-
-### CD Flow
-1. **Git Change Detection** → ArgoCD monitors repository
-2. **Sync Process** → Applies desired state to cluster
-3. **Health Check** → Validates deployment success
-4. **Monitoring** → Tracks application performance
-
-## Security Considerations
-
-### CI Security
-- **Image Scanning**: Trivy vulnerability detection
-- **Secret Management**: OpenShift Secrets integration
-- **Access Control**: RBAC for pipeline execution
-- **Audit Trail**: Complete pipeline logging
-
-### CD Security
-- **GitOps Verification**: Signed commits verification
-- **Network Policies**: Restrict pod communication
-- **Pod Security**: SCC and security contexts
-- **Resource Isolation**: Namespace separation
-
-## Performance Optimizations
-
-### Build Optimization
-- **Multi-stage Builds**: Reduce image size
-- **Layer Caching**: Speed up builds
-- **Parallel Execution**: Tekton task parallelization
-- **Resource Limits**: Controlled resource usage
-
-### Runtime Optimization
-- **Horizontal Pod Autoscaler**: Scale based on demand
-- **Resource Requests/Limits**: Efficient resource allocation
-- **Pod Disruption Budget**: High availability
-- **Health Checks**: Proactive monitoring
-
----
-
-# Project Overview
-
-This project demonstrates a **GitOps-based deployment** for a Netflix Clone application on OpenShift using ArgoCD.
-
-## High-level system flow
-
-GitHub → ArgoCD → OpenShift Cluster → Application Runtime
-
-## Components
-
-- **GitHub**
-  - Source of truth for:
-    - React application source code
-    - Kubernetes manifests (`openshift/`)
-    - ArgoCD Application definition (`argocd/`)
-
----
-
-# CI/CD & Delivery Model
-
-This project follows a **GitOps-based delivery model**.
-
-### Delivery flow
-
-1. Developer pushes code to GitHub
-2. Git repository becomes the single source of truth
-3. ArgoCD detects changes in manifests
-4. OpenShift reconciles cluster state automatically
-5. Application is deployed or updated
-
----
-
-### Important clarification
-
-- CI pipelines (build, scan, image push) are **NOT implemented in this repository as code**
-- If CI is used, it is handled at **cluster level (OpenShift Pipelines / Tekton)** and is outside repository scope
-- This repository focuses only on **GitOps CD (Continuous Delivery)**
-
----
-
-## DevSecOps Features
-
-- Kubernetes-native deployment:
-  - Deployment
-  - Service
-  - Route
-
-- GitOps (ArgoCD):
-  - Automated sync
-  - Self-healing
-  - Drift correction
-
-- Scaling:
-  - HorizontalPodAutoscaler (CPU-based)
-
-- Resilience:
-  - PodDisruptionBudget
-
-- Resource Governance:
-  - ResourceQuota
-  - LimitRange
-
-- Security Controls:
-  - ServiceAccount
-  - RoleBinding (OpenShift SCC integration)
-
----
-
-## What is in this repo
-
-This repository contains only **application-owned artifacts**:
-
-- React + TypeScript source code (`src/`)
-- Kubernetes manifests (`openshift/`)
-- ArgoCD Application definition (`argocd/application.yaml`)
-
----
-
-## What is NOT in this repo
-
-The following components are **external / cluster-managed** and NOT stored in this repository:
-
-- ArgoCD Operator installation
-- OpenShift cluster infrastructure
-- Monitoring stack (Prometheus / Grafana)
-- Image registry (Quay / DockerHub)
-- Ingress / Router infrastructure
-- CI pipelines (Tekton / OpenShift Pipelines)
-
----
-
-## Repository Structure
-
-```text
 .
 ├─ argocd/
 │  └─ application.yaml        # ArgoCD Application definition
@@ -277,6 +100,194 @@ The following components are **external / cluster-managed** and NOT stored in th
 │  └─ limit-range.yaml
 └─ src/                      # React application
 ```
+
+---
+
+# GitOps delivery with Argo CD
+
+`argocd/application.yaml` defines an Argo CD Application named `netflix-clone` that:
+
+- Pulls the Kubernetes manifests from the repo path `openshift/`
+- Deploys into the specified namespace
+- Uses automated sync with:
+  - prune: removes deleted manifests
+  - selfHeal: reconciles drift automatically
+
+---
+
+# Kubernetes deployment
+
+## Kubernetes manifests
+The manifests in `openshift/` define:
+
+- **Deployment**: Pod management with replica configuration
+- **Service**: Internal cluster networking
+- **Route**: External access via OpenShift router
+- **HorizontalPodAutoscaler**: Auto-scaling based on CPU usage
+- **PodDisruptionBudget**: High availability guarantee
+- **ResourceQuota**: Project-level resource limits
+- **LimitRange**: Default resource constraints
+- **Security**: ServiceAccount and RoleBinding for SCC integration
+
+## Example deployment
+From the repo folder:
+
+```bash
+oc apply -f argocd/application.yaml
+```
+
+---
+
+# Run locally
+
+## Local development setup
+
+```bash
+npm ci
+npm run dev
+```
+
+## Docker build
+```bash
+docker build --build-arg TMDB_V3_API_KEY=YOUR_KEY -t netflix-clone .
+docker run -p 8080:8080 netflix-clone
+```
+
+---
+
+# Tooling screenshots
+
+## Application UI
+
+### Home Page
+<div align="center">
+  <img src="./public/assets/home-page.png" alt="Home Page" width="100%" />
+</div>
+
+### Mini Portal
+<div align="center">
+  <img src="./public/assets/mini-portal.png" alt="Mini Portal" width="100%" />
+</div>
+
+### Detail View
+<div align="center">
+  <img src="./public/assets/detail-modal.png" alt="Detail Modal" width="100%" />
+</div>
+
+### Genre Grid
+<div align="center">
+  <img src="./public/assets/grid-genre.png" alt="Grid Genre Page" width="100%" />
+</div>
+
+### Watch Page
+<div align="center">
+  <img src="./public/assets/watch.png" alt="Watch Page" width="100%" />
+</div>
+
+## OpenShift & GitOps
+
+### Installed Operators
+<div align="center">
+  <img src="./docs/screenshots/01-openshift-installed-operators.png" alt="Installed Operators" width="100%" />
+</div>
+
+### ArgoCD Application Details
+<div align="center">
+  <img src="./docs/screenshots/10-argocd-app-details.png" alt="ArgoCD Application details" width="100%" />
+</div>
+
+### ArgoCD Application Tree
+<div align="center">
+  <img src="./docs/screenshots/06-argocd-app-tree.png" alt="ArgoCD app tree" width="100%" />
+</div>
+
+### OpenShift Project Overview
+<div align="center">
+  <img src="./docs/screenshots/08-openshift-project-overview.png" alt="OpenShift project overview" width="100%" />
+</div>
+
+### Pod Metrics
+<div align="center">
+  <img src="./docs/screenshots/02-openshift-pod-metrics.png" alt="Pod metrics" width="100%" />
+</div>
+
+### Tekton PipelineRun Details
+<div align="center">
+  <img src="./docs/screenshots/11-tekton-pipelinerun-details.png" alt="Tekton PipelineRun details" width="100%" />
+</div>
+
+### Tekton Clone and Build
+<div align="center">
+  <img src="./docs/screenshots/04-tekton-clone-and-build.png" alt="Tekton clone and build logs" width="100%" />
+</div>
+
+### Tekton Build and Push Image Logs
+<div align="center">
+  <img src="./docs/screenshots/tekton-build-and-push-image-logs.png" alt="Tekton Build and Push Image Logs" width="100%" />
+</div>
+
+### Tekton Trivy Security Scan
+<div align="center">
+  <img src="./docs/screenshots/03-tekton-trivy-image-scan.png" alt="Tekton Trivy image scan logs" width="100%" />
+</div>
+
+### Tekton Deploy to OpenShift
+<div align="center">
+  <img src="./docs/screenshots/07-tekton-deploy-to-openshift.png" alt="Tekton deploy logs" width="100%" />
+</div>
+
+### Tekton Pipelines Overview
+<div align="center">
+  <img src="./docs/screenshots/05-tekton-pipelines-overview.png" alt="Tekton pipelines overview" width="100%" />
+</div>
+
+### Deployed Application UI
+<div align="center">
+  <img src="./docs/screenshots/12-app-ui.png" alt="Deployed app UI" width="100%" />
+</div>
+
+### OpenShift Project Details
+<div align="center">
+  <img src="./docs/screenshots/openshift-project-details.png" alt="OpenShift Project Details" width="100%" />
+</div>
+
+### ArgoCD Application Management
+<div align="center">
+  <img src="./docs/screenshots/argocd-application-management.png" alt="ArgoCD Application Management" width="100%" />
+</div>
+
+### OpenShift Pod Metrics
+<div align="center">
+  <img src="./docs/screenshots/openshift-pod-metrics.png" alt="OpenShift Pod Metrics" width="100%" />
+</div>
+
+### OpenShift PipelineRun Details
+<div align="center">
+  <img src="./docs/screenshots/openshift-pipelinerun-details.png" alt="OpenShift PipelineRun Details" width="100%" />
+</div>
+
+### OpenShift PipelineRun Logs
+<div align="center">
+  <img src="./docs/screenshots/openshift-pipelinerun-logs.png" alt="OpenShift PipelineRun Logs" width="100%" />
+</div>
+
+---
+
+# Security note (important)
+
+This project focuses on GitOps-based deployment with security considerations:
+
+- **Container scanning**: Trivy integration for vulnerability detection
+- **Security contexts**: Non-root execution and capability dropping
+- **RBAC**: Role-based access control with least privilege principle
+- **Network policies**: Pod communication restrictions
+- **Resource isolation**: Namespace separation and resource governance
+
+For production environments, ensure:
+- Proper secret management (OpenShift Secrets or external secret managers)
+- Image signing and verification
+- Comprehensive security scanning in CI pipelines
+- Regular security updates and patching
 
 ## Deploy on OpenShift (GitOps)
 
