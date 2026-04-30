@@ -30,7 +30,7 @@ A modern **Netflix Clone application** built with **React + TypeScript + Vite**,
 ### GitOps layer (ArgoCD managed) <img width="1920" height="1200" alt="Screenshot 2026-04-30 at 12 52 32 AM" src="https://github.com/user-attachments/assets/1a46f6f6-1633-4f6c-8b16-a3933588d3b3" />
 
 
-* Kubernetes manifests (`openshift/`) <img width="1920" height="1200" alt="Screenshot 2026-04-30 at 12 53 16 AM" src="https://github.com/user-attachments/assets/dba1af77-9f61-4228-85b0-db424bd0f9a5" />
+* OpenShift manifests (`openshift/`) <img width="1920" height="1200" alt="Screenshot 2026-04-30 at 12 53 16 AM" src="https://github.com/user-attachments/assets/dba1af77-9f61-4228-85b0-db424bd0f9a5" />
 
 
   * Deployment
