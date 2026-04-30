@@ -71,30 +71,7 @@ A modern **Netflix Clone application** built with **React + TypeScript + Vite**,
 
 ---
 
-## Repository structure
 
-```text
-.
-├─ argocd/
-│  └─ application.yaml        # ArgoCD GitOps application
-│
-├─ openshift/                 # Kubernetes desired state
-│  ├─ deployment.yaml
-│  ├─ service.yaml
-│  ├─ route.yaml
-│  ├─ hpa.yaml
-│  ├─ pdb.yaml
-│  ├─ resource-quota.yaml
-│  ├─ limit-range.yaml
-│  ├─ security.yaml
-│  └─ kustomization.yaml
-│
-├─ src/                       # React + TypeScript app
-├─ public/                    # Static assets (images, logos)
-└─ package.json
-```
-
----
 
 ## CI/CD pipeline (DevSecOps flow)
 
