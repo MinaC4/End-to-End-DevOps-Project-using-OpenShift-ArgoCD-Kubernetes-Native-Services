@@ -215,8 +215,7 @@ These components are cluster-managed:
 * OpenShift cluster setup
 * ArgoCD operator installation
 * Container registry configuration
-* Monitoring stack (Prometheus / Grafana)
-
+* Monitoring 
 ---
 
 ## Key engineering concepts demonstrated
