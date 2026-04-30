@@ -240,4 +240,24 @@ This project demonstrates a real-world production-style DevSecOps system:
 * **OpenShift → Runtime platform**
 
 ---
+## Repository Structure Note
 
+This project is simplify cloning and running the full DevOps flow with a single `git clone`, especially for local testing with OpenShift CRC.
+
+**Note:** Some files (tasks, triggers, and detailed pipeline structure) are not yet included in this repository for simplicity. They will be added in future updates.
+The following professional Tekton structure is **planned** but not yet added to the repository:
+
+```bash
+
+├── pipelines/
+│   ├── netflix-clone-pipeline.yaml    # Main Pipeline definition
+│   └── pipeline-run-example.yaml      # Example of PipelineRun
+├── tasks/
+│   ├── git-clone.yaml                 # Clone repository task
+│   ├── buildah.yaml                   # Build Docker image using Buildah
+│   ├── trivy-scan.yaml                # Security vulnerability scan
+│   └── push-image.yaml                # Push image to registry
+└── triggers/
+    ├── github-push-binding.yaml       # GitHub webhook binding
+    ├── trigger-template.yaml          # PipelineRun template
+    └── event-listener.yaml            # Webhook event listener
