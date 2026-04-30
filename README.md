@@ -152,7 +152,7 @@ Open ArgoCD UI:
 
 ## Summary
 
-This project demonstrates a real-world production-style **DevSecOps** system:
+This project is a demo not a real-world production:
 
 **GitHub** → Source of truth  
 **Tekton** → CI engine  
