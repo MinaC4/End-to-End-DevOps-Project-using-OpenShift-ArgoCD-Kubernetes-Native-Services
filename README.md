@@ -10,7 +10,7 @@
 
 ### Detailed Architecture Flow
 
-## A modern **Netflix Clone application** built with **React + TypeScript + Vite**, and deployed on **OpenShift** using a full **DevSecOps + GitOps pipeline** with **Tekton (CI)** and **ArgoCD (CD)**.
+## A modern **Netflix Clone application** built with **React + TypeScript + Vite**, and deployed on **OpenShift** using a full **DevOps + GitOps pipeline** with **Tekton (CI)** and **ArgoCD (CD)**.
 
 ## What’s in this repo
 
