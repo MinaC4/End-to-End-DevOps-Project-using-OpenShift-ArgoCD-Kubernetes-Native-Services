@@ -1,0 +1,68 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"tekton.dev/v1","kind":"Pipeline","metadata":{"annotations":{},"name":"netflix-clone-pipeline","namespace":"openshift-pipelines"},"spec":{"description":"Netflix Clone - DevSecOps Pipeline (Build + Trivy Scan + Deploy)","tasks":[{"name":"clone-and-build","taskRef":{"name":"npm-build"},"workspaces":[{"name":"source","workspace":"source"}]},{"name":"build-and-push-image","params":[{"name":"image","value":"image-registry.openshift-image-registry.svc:5000/netflix-clone/netflix-clone:latest"}],"runAfter":["clone-and-build"],"taskRef":{"name":"buildah-build"},"workspaces":[{"name":"source","workspace":"source"}]},{"name":"trivy-image-scan","params":[{"name":"image","value":"image-registry.openshift-image-registry.svc:5000/netflix-clone/netflix-clone:latest"},{"name":"severity","value":"HIGH"}],"runAfter":["build-and-push-image"],"taskRef":{"name":"trivy-image-scan"}},{"name":"deploy-to-openshift","params":[{"name":"script","value":"#!/bin/bash\nset -ex\necho \"=== Updating Deployment with new image ===\"\noc set image deployment/netflix-clone netflix-clone=image-registry.openshift-image-registry.svc:5000/netflix-clone/netflix-clone:latest -n netflix-clone\n\necho \"=== Restarting Deployment ===\"\noc rollout restart deployment/netflix-clone -n netflix-clone\n\necho \"=== Waiting for rollout to complete ===\"\noc rollout status deployment/netflix-clone -n netflix-clone --timeout=180s\n\necho \"=== Deployment completed successfully! ===\"\n"}],"runAfter":["trivy-image-scan"],"taskRef":{"name":"openshift-client"}}],"workspaces":[{"name":"source"}]}}
+  creationTimestamp: "2026-04-29T20:29:10Z"
+  generation: 4
+  name: netflix-clone-pipeline
+  namespace: openshift-pipelines
+  resourceVersion: "146253"
+  uid: 01ee0bd9-db7c-4431-90dd-450f44c1dbef
+spec:
+  description: Netflix Clone - DevSecOps Pipeline (Build + Trivy Scan + Deploy)
+  tasks:
+  - name: clone-and-build
+    taskRef:
+      kind: Task
+      name: npm-build
+    workspaces:
+    - name: source
+      workspace: source
+  - name: build-and-push-image
+    params:
+    - name: image
+      value: image-registry.openshift-image-registry.svc:5000/netflix-clone/netflix-clone:latest
+    runAfter:
+    - clone-and-build
+    taskRef:
+      kind: Task
+      name: buildah-build
+    workspaces:
+    - name: source
+      workspace: source
+  - name: trivy-image-scan
+    params:
+    - name: image
+      value: image-registry.openshift-image-registry.svc:5000/netflix-clone/netflix-clone:latest
+    - name: severity
+      value: HIGH
+    runAfter:
+    - build-and-push-image
+    taskRef:
+      kind: Task
+      name: trivy-image-scan
+  - name: deploy-to-openshift
+    params:
+    - name: script
+      value: |
+        #!/bin/bash
+        set -ex
+        echo "=== Updating Deployment with new image ==="
+        oc set image deployment/netflix-clone netflix-clone=image-registry.openshift-image-registry.svc:5000/netflix-clone/netflix-clone:latest -n netflix-clone
+
+        echo "=== Restarting Deployment ==="
+        oc rollout restart deployment/netflix-clone -n netflix-clone
+
+        echo "=== Waiting for rollout to complete ==="
+        oc rollout status deployment/netflix-clone -n netflix-clone --timeout=180s
+
+        echo "=== Deployment completed successfully! ==="
+    runAfter:
+    - trivy-image-scan
+    taskRef:
+      kind: Task
+      name: openshift-client
+  workspaces:
+  - name: source
