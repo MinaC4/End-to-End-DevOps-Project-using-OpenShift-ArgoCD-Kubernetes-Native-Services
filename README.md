@@ -144,7 +144,7 @@ Open ArgoCD UI:
 ## Key Engineering Concepts Demonstrated
 
 - GitOps architecture design
-- CI/CD separation (Tekton vs ArgoCD)
+- CI/CD separation (Tekton - ArgoCD)
 - Kubernetes-native deployment
 - Declarative infrastructure (YAML-driven)
 - DevSecOps lifecycle implementation
