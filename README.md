@@ -383,19 +383,19 @@ container:
 | **OpenShift Pipelines** (Tekton Operator) | `openshift-pipelines` | CI/CD engine |
 | **OpenShift GitOps** (ArgoCD Operator) | `openshift-gitops` | GitOps engine |
 | **OpenShift Internal Registry** | `openshift-image-registry` | Image storage |
-| **OpenShift Monitoring** | `openshift-monitoring` | Prometheus + Grafana |
+| **OpenShift Monitoring** | `openshift-monitoring` 
 | **OpenShift Router** (HAProxy) | `openshift-ingress` | External routing |
 
 ### Key Metrics Tracked
 
 | Metric | Source | Dashboard |
 |--------|--------|-----------|
-| Pod CPU/Memory utilization | Prometheus | Grafana |
+| Pod CPU/Memory utilization 
 | HPA scaling events | Kubernetes Metrics | OpenShift Console |
 | Deployment rollout status | OpenShift API | ArgoCD UI |
 | Container vulnerability scan | Trivy | Tekton Results |
 | ArgoCD sync status | ArgoCD Metrics | ArgoCD UI |
-| Application request latency | Nginx logs | Grafana Loki |
+| Application request latency | Nginx logs | 
 
 ---
 
