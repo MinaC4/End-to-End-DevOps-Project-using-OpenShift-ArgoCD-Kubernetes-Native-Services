@@ -19,6 +19,17 @@
 
 ---
 
+
+
+##  Architecture Overview
+
+<div align="center">
+
+![Architecture Diagram]
+
+<img width="1639" height="960" alt="ChatGPT Image May 1, 2026, 01_43_10 PM" src="https://github.com/user-attachments/assets/6911839d-5c42-4270-bec4-e81368c4132e" />
+
+
 ##  Table of Contents
 
 - [Architecture Overview](#-architecture-overview)
@@ -35,11 +46,6 @@
 
 ---
 
-##  Architecture Overview
-
-<div align="center">
-
-![Architecture Diagram](docs/images/architecture-diagram.svg)
 
 **End-to-End DevOps + GitOps Architecture Flow**
 
